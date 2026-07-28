@@ -6,6 +6,29 @@ this file is committed on `main` only and must never appear in an upstream
 PR diff. (A locally-ignored copy sits at the dev clone's root via
 `.git/info/exclude` so branch checkouts still surface it.)
 
+## 2026-07-28 (gate restoration) · claude-code
+
+- **Did:** Fixed the last Codex finding (final-pass review: 5 PASS / 1
+  Medium FAIL): my rework had swapped the current-profile restart gate to
+  a domain locate, breaking upstream semantics (no-plist installs got
+  probed, and macOS-26 registered-but-unprintable labels skipped
+  `launchd_restart()` which owns the domain-unsupported fallback).
+  Restored the exact upstream gate (plist first → `launchctl list`
+  registration predicate via new `_launchd_service_registered()`; locate
+  is siblings-only), +2 regression tests pinning both behaviors (27/27).
+  Suite v4 verdict: zero regressions — all remaining reds are the
+  pre-existing baseline (proven on pristine upstream) or solo-pass load
+  flakes. Amended to `32198028ab`, branch pushed to fork.
+- **Why:** Merge-ready bar — the sweeper rejected the original PR for a
+  domain defect; ours has to survive that same review class cleanly.
+- **Next:** One focused Codex re-check of the gate fix is running in
+  background; on RESOLVED → file the 2 upstream issues + superseding PR
+  (drafts in session scratchpad: issue_fleet_restart.md, issue_ps_eww.md,
+  pr_body.md; PR = supersedes #41403, Co-authored-by David Neyra).
+- **Watch out:** When "preserving old behavior," diff against the literal
+  upstream block, not your memory of it — gate ORDER and PREDICATE were
+  both load-bearing here (macOS-26 fallback + zero-calls-when-no-plist).
+
 ## 2026-07-28 (final verification) · claude-code
 
 - **Did:** Closed out full-suite forensics: fixed a 2nd self-regression
