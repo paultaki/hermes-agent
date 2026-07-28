@@ -6,6 +6,24 @@ this file is committed on `main` only and must never appear in an upstream
 PR diff. (A locally-ignored copy sits at the dev clone's root via
 `.git/info/exclude` so branch checkouts still surface it.)
 
+## 2026-07-28 (SUBMITTED) · claude-code
+
+- **Did:** Upstream submission complete: issue #73625 (fleet-restart
+  tracking, full two-machine field evidence), issue #73626 (`ps -A eww`
+  dead-sweep discovery), PR #73627 (supersedes #41403, Co-authored-by
+  David Neyra), courtesy comment on #41403. Final gate cleared by
+  mechanical verification (byte-level diff of the current-profile gate vs
+  upstream's inline block + the 2 pinning tests) after `codex exec`
+  turned out to hang reading stdin when backgrounded.
+- **Why:** Paul's path to upstream contributor status; first merged PR
+  is the milestone.
+- **Next:** Watch #73627 for the hermes-sweeper auto-review and human
+  maintainer response — respond FAST (that's where #41403 died). After
+  merge: offer the #73626 ps-fix follow-up PR (safe only post-merge),
+  and retire `~/.hermes/bin/hermes-update-all.sh` on both Macs.
+- **Watch out:** Never background `codex exec` without `</dev/null` — it
+  silently blocks on stdin with 0 CPU and empty output.
+
 ## 2026-07-28 (status check) · claude-code
 
 - **Did:** No new code since `32198028ab` (already logged below). Found the
