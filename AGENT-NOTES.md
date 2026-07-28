@@ -6,6 +6,19 @@ this file is committed on `main` only and must never appear in an upstream
 PR diff. (A locally-ignored copy sits at the dev clone's root via
 `.git/info/exclude` so branch checkouts still surface it.)
 
+## 2026-07-28 (status check) · claude-code
+
+- **Did:** No new code since `32198028ab` (already logged below). Found the
+  focused Codex gate re-check stalled (~0 CPU after 15 min); killed and
+  relaunched it with a tighter time-boxed prompt.
+- **Why:** Paul asked for status; submission is gated only on this check.
+- **Next:** On RESOLVED (or a second stall → verify mechanically by
+  diffing the gate block against upstream + the 2 pinning tests), file
+  the 2 upstream issues + superseding PR from the scratchpad drafts.
+- **Watch out:** `codex exec` can stall silently with empty output —
+  check CPU time (`ps aux`), not just wall time, before trusting a
+  long-running review.
+
 ## 2026-07-28 (gate restoration) · claude-code
 
 - **Did:** Fixed the last Codex finding (final-pass review: 5 PASS / 1
