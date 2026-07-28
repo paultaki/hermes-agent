@@ -2,7 +2,40 @@
 
 Handoff log for fleet agents working in this fork. Newest entries on top.
 This fork exists to carry upstream contributions; keep PR branches clean —
-this file lives on `main` only and must never appear in an upstream PR diff.
+this file is committed on `main` only and must never appear in an upstream
+PR diff. (A locally-ignored copy sits at the dev clone's root via
+`.git/info/exclude` so branch checkouts still surface it.)
+
+## 2026-07-28 (later) · claude-code
+
+- **Did:** Caught and fixed a serious regression in my own fleet-restart
+  branch via the full CI-parity suite: enumerating the fleet by globbing
+  the REAL `~/Library/LaunchAgents` (pwd-home) leaked this machine's 9
+  production labels into the sandboxed update tests
+  (`test_update_yes_flag` 2✗/502s, `test_cmd_update` +
+  `test_update_autostash` 600s SIGKILL). Production fleet was untouched
+  (tests mock subprocess) but the design was wrong: a sandboxed
+  HERMES_HOME must never see another install's fleet. Replaced the glob
+  with install-scoped `launchd_gateway_labels_for_install()` (derives
+  labels from `list_profiles()` / `get_default_hermes_root()`). The 3
+  files now pass 103/103 in 86s; my 25 regression tests green; the one
+  remaining suite failure (`test_computer_use.py` gnome-shell filter)
+  reproduces identically on pristine upstream/main — pre-existing, not
+  ours. Amended commit: `54fff54546`.
+- **Why:** "Zero questions at review" bar — the recommended contributor
+  setup is a live install, so upstream reviewers would have hit the same
+  test blowup immediately.
+- **Next:** Awaiting final full-suite run (v3) + Codex CLI second-pass
+  verification (first pass found 4 real defects, all fixed: domain-blind
+  discovery, `_get_service_pids` scope leak into the orphan reaper,
+  swallowed launchctl timeouts, Windows test crash). Then: push branch,
+  file 2 upstream issues (fleet-restart tracking + the separate
+  `ps -A eww` dead-sweep bug) + the superseding PR. Drafts in the session
+  scratchpad (`issue_fleet_restart.md`, `issue_ps_eww.md`, `pr_body.md`).
+- **Watch out:** Don't run bare `pytest tests/hermes_cli/test_cmd_update*`
+  outside `scripts/run_tests.sh` hermeticity on a machine with a live
+  fleet until this branch's install-scoping is in — with subprocess
+  unmocked those paths execute REAL launchctl calls.
 
 ## 2026-07-28 · claude-code
 
