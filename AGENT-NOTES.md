@@ -6,6 +6,20 @@ this file is committed on `main` only and must never appear in an upstream
 PR diff. (A locally-ignored copy sits at the dev clone's root via
 `.git/info/exclude` so branch checkouts still surface it.)
 
+## 2026-07-28 (watch armed) · claude-code
+
+- **Did:** No code delta (still `32198028ab`, submitted as PR #73627).
+  Armed a persistent 90s-poll monitor in the active Claude Code session
+  watching PR #73627 + issues #73625/#73626 for reviews/comments/labels/
+  merge.
+- **Why:** Paul asked for active check-ins on the hermes-sweeper bot;
+  fast response to its review is the whole game.
+- **Next:** On sweeper/maintainer activity: fix → re-test → push → reply
+  same-day. The monitor dies with that session — if it's gone, poll
+  `gh pr view 73627 --repo NousResearch/hermes-agent` manually.
+- **Watch out:** `needs-decision` label is on the PR — a maintainer call
+  is pending; anything scope-related goes to Paul before replying.
+
 ## 2026-07-28 (SUBMITTED) · claude-code
 
 - **Did:** Upstream submission complete: issue #73625 (fleet-restart
