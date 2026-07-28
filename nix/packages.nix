@@ -9,6 +9,26 @@
       ...
     }:
     let
+      sandbox = pkgs.writeShellApplication {
+        name = "sandbox";
+        runtimeInputs = with pkgs; [
+          bash
+          bubblewrap
+          coreutils
+          curl
+          gawk
+          git
+          gnused
+          netcat-gnu
+          openssl
+          python3
+          gnutar
+        ];
+        text = ''
+          exec ${../scripts/dev-sandbox.sh} "$@"
+        '';
+      };
+
       minimal = pkgs.callPackage ./hermes-agent.nix {
         inherit (inputs) uv2nix pyproject-nix pyproject-build-systems;
         npm-lockfile-fix = inputs'.npm-lockfile-fix.packages.default;
@@ -45,6 +65,8 @@
     {
       packages = {
         default = full;
+
+        inherit sandbox;
 
         inherit minimal;
 
