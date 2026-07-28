@@ -6,6 +6,24 @@ this file is committed on `main` only and must never appear in an upstream
 PR diff. (A locally-ignored copy sits at the dev clone's root via
 `.git/info/exclude` so branch checkouts still surface it.)
 
+## 2026-07-28 (final verification) · claude-code
+
+- **Did:** Closed out full-suite forensics: fixed a 2nd self-regression
+  (upstream `tests/hermes_cli/test_gateway.py` stubs `_get_service_pids`
+  as a zero-arg lambda; my `all_profiles` passthrough broke the signature
+  — stubs updated, 57/57 green). Attributed every remaining suite
+  failure: 14 files reproduce identically on pristine upstream/main
+  (pre-existing baseline), `test_stale_diagnostics` is a parallel-load
+  flake (passes solo on both trees). Amended commit: `4ee4e31a8e`.
+- **Why:** Zero-questions bar for the upstream PR — every red test either
+  fixed or provably not ours.
+- **Next:** Full suite v4 + Codex pass 2 running in background; then a
+  short Codex delta-check of the two post-review fixes, push branch, file
+  2 issues + superseding PR (drafts in session scratchpad).
+- **Watch out:** After changing any shared helper's signature, re-run the
+  neighboring upstream test files that stub it — spot-checks before a
+  rework don't carry over.
+
 ## 2026-07-28 (later) · claude-code
 
 - **Did:** Caught and fixed a serious regression in my own fleet-restart
