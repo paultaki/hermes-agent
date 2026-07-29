@@ -6,6 +6,20 @@ this file is committed on `main` only and must never appear in an upstream
 PR diff. (A locally-ignored copy sits at the dev clone's root via
 `.git/info/exclude` so branch checkouts still surface it.)
 
+## 2026-07-28 (session handoff) · claude-code
+
+- **Did:** Paul is clearing the session; wrote the full monitoring/response
+  playbook to `~/Desktop/2026-07-28-hermes-pr73627-monitoring-handoff.md`
+  (re-armable Monitor script, sweeper response playbook, load-bearing
+  design points, this Mac's pre-existing test baseline). Memory pointer
+  added. The old session's live monitor dies with that session.
+- **Why:** Continuity — the next session must resume the watch in minutes,
+  not re-derive three review cycles of context.
+- **Next:** New session: read the Desktop handoff, re-arm the monitor,
+  follow the playbook. PR #73627 still unreviewed at handoff.
+- **Watch out:** PR responses go out as paultaki — scope/design questions
+  (`needs-decision`) get surfaced to Paul before replying.
+
 ## 2026-07-28 (watch armed) · claude-code
 
 - **Did:** No code delta (still `32198028ab`, submitted as PR #73627).
