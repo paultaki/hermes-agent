@@ -6,6 +6,36 @@ this file is committed on `main` only and must never appear in an upstream
 PR diff. (A locally-ignored copy sits at the dev clone's root via
 `.git/info/exclude` so branch checkouts still surface it.)
 
+## 2026-07-29 (competing PR #73632) · claude-code
+
+- **Did:** Resumed the watch from the Desktop handoff and fixed three bugs in
+  its monitor script (BSD `grep -qE` — `\|` never matched, so the exit-on-merge
+  check was dead; a partial-poll acceptance guard; added `gh pr checks`).
+  Found `codexbt`'s PR #73632, opened 15 min after Paul's issue #73626,
+  carrying the verbatim `ps -Aww` fix sketch **minus the sequencing note**,
+  buried in +4679/-3 of unrelated NVIDIA skills. The triage bot called it
+  "best fix" and recommended merging it after scope cleanup. Verified the
+  hazard against `upstream/main`, then posted a sequencing warning on #73632
+  (`issuecomment-5117872966`) — Paul's call, chosen over replying on #73626.
+- **Why:** `main`'s update sweep excludes only current-profile service PIDs
+  (`_get_service_pids()`, main.py:13509) while searching every profile
+  (`find_gateway_pids(all_profiles=True)`, :13510). The `ps` bug is precisely
+  what masks that asymmetry on macOS. Land the scan fix alone and sibling
+  launchd gateways enumerate as *manual* processes → SIGUSR1 drain → SIGTERM
+  → detached respawn watcher racing launchd `KeepAlive` → duplicate gateways
+  (8 of them on this Mac's 9-gateway install, every `hermes update`).
+  #73627 is the prerequisite: it widens `_get_service_pids(all_profiles=True)`
+  at both sweep call sites (branch main.py:13610, :13728).
+- **Next:** Watch #73632 for a maintainer reply. If they reduce it to the
+  2-line gateway change and move to merge, either the sequencing objection
+  holds or #73627 lands first. Monitor now covers #73632 alongside
+  #73627/#73625/#73626.
+- **Watch out:** #73632 is already labeled `invalid`/P3 and may just be
+  closed — don't escalate further unless a maintainer actually engages, and
+  keep it about correctness, not authorship. No code changed this session;
+  branch still at `32198028ab`. PR #73627 remains at zero reviews, and **no
+  CI has ever run on its branch** (likely first-contributor workflow gating).
+
 ## 2026-07-28 (session handoff) · claude-code
 
 - **Did:** Paul is clearing the session; wrote the full monitoring/response
