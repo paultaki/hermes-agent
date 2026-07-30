@@ -6,6 +6,48 @@ this file is committed on `main` only and must never appear in an upstream
 PR diff. (A locally-ignored copy sits at the dev clone's root via
 `.git/info/exclude` so branch checkouts still surface it.)
 
+## 2026-07-30 · claude-code
+
+- **Did:** hermes-sweeper finally reviewed **#73627** (`keep_open`,
+  `salvageability=medium`) with **no design objections** — it validated the
+  per-label approach and asked only for a rebase, because `927463efcc`
+  extracted the update pipeline from `hermes_cli/main.py` into
+  `hermes_cli/update_cmd.py` on 07-29. Rebased 918 commits onto
+  `upstream/main` (`gateway.py`'s 275 lines auto-merged clean; both `main.py`
+  conflicts had an **empty upstream side**, so they resolved to upstream and
+  verified byte-identical). Ported `_restart_macos_launchd_gateways()`, the
+  macOS call site, and both `_get_service_pids(all_profiles=True)` sweeps
+  into `update_cmd.py`; repointed the 27-test file to import from
+  `hermes_cli.update_cmd`. Amended to **`6b993c1d33`**, both co-author
+  trailers intact. Separately, the sweeper reviewed **#73632** a minute later
+  and **independently reproduced Paul's sequencing argument** verbatim, and
+  told them to split out the 4,677 NVIDIA-skill lines.
+- **Why:** The sweeper's only blocker was mechanical, so this was the
+  playbook's "just do it" branch. Dropped the PR's `test_gateway.py` edits
+  entirely — upstream restructured that file (392 lines now) and deleted both
+  tests it touched, and no remaining upstream test monkeypatches
+  `_get_service_pids`, so the widened signature needs nothing at the current
+  test surface. Put the new helper next to
+  `_warn_incomplete_gateway_fleet_restart` rather than adding it to
+  `main.py`'s re-export block, since that block exists for *moved* names and
+  this one is new.
+- **Next:** **NOT PUSHED, NOTHING POSTED** — awaiting Paul's go on (1) the
+  force-push (`--force-with-lease`; PR head moves `32198028ab` →
+  `6b993c1d33`) and (2) the point-by-point reply, drafted at
+  `~/Desktop/2026-07-30-pr73627-sweeper-reply-draft.md`. Once #73627 lands,
+  the #73626 `ps -Aww` follow-up becomes safe — and the sweeper has now said
+  so itself on #73632, which is the cleanest possible citation for it.
+- **Watch out:** Tests — 27/27 on the fleet-restart file, 42/42 on the four
+  regression files, 274 passed / **6 failed** across all `test_update*` +
+  `test_gateway*`. Those 6 (`test_update_eol_churn.py` ×5 +
+  `test_gateway_service.py::...test_systemd_restart_gracefully_restarts_running_service_and_waits`)
+  fail **identically on pristine `upstream/main` at `acfd376d66`** — verified
+  in `~/Development/hermes-upstream-check`, do not report them as ours. The
+  previous session's baseline list lived in a dead scratchpad, so it had to
+  be re-derived; re-derive it again rather than trusting this line blindly.
+  Also: this repo's shell is **zsh**, where unquoted `$FILES` does not
+  word-split — pass globs to pytest directly.
+
 ## 2026-07-29 (competing PR #73632) · claude-code
 
 - **Did:** Resumed the watch from the Desktop handoff and fixed three bugs in
