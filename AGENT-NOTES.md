@@ -6,6 +6,29 @@ this file is committed on `main` only and must never appear in an upstream
 PR diff. (A locally-ignored copy sits at the dev clone's root via
 `.git/info/exclude` so branch checkouts still surface it.)
 
+## 2026-07-30 (pushed + replied) · claude-code
+
+- **Did:** Paul approved. Force-pushed the rebase+port with
+  `--force-with-lease` (`32198028ab` → **`6b993c1d33`**) and posted the
+  point-by-point sweeper reply
+  (`pull/73627#issuecomment-5133486363`). **Supersedes the "NOT PUSHED"
+  line in the entry below — that hold is over.**
+- **Why:** The sweeper's only blocker on #73627 was the merge conflict from
+  the `main.py` → `update_cmd.py` extraction; resolving it is what unblocks
+  a maintainer decision.
+- **Next:** GitHub now reports **`mergeable: MERGEABLE`** (was `CONFLICTING`),
+  so the salvageability complaint is answered. Still `needs-decision`, still
+  **zero CI runs ever** on the branch — first-contributor workflow approval
+  remains the likeliest gate, and is the thing worth nudging if it stays
+  silent another day or two. Watch for a re-review from hermes-sweeper on the
+  new head.
+- **Watch out:** The reply commits us publicly to the pre-existing-failure
+  claim (6 failures, identical on pristine `upstream/main` @ `acfd376d66`) —
+  if a maintainer disputes it, re-run in
+  `~/Development/hermes-upstream-check` rather than re-arguing from memory.
+  Reply draft also archived at
+  `~/Desktop/2026-07-30-pr73627-sweeper-reply-draft.md`.
+
 ## 2026-07-30 · claude-code
 
 - **Did:** hermes-sweeper finally reviewed **#73627** (`keep_open`,
