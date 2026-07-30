@@ -6,6 +6,43 @@ this file is committed on `main` only and must never appear in an upstream
 PR diff. (A locally-ignored copy sits at the dev clone's root via
 `.git/info/exclude` so branch checkouts still surface it.)
 
+## 2026-07-30 (codexbt reimplemented our change) · claude-code
+
+- **Did:** codexbt refactored #73632 (`5cf2751`) after the sweeper review and
+  **reimplemented #73627's core change** — `all_profiles` on
+  `_get_service_pids()`, passed at both sweeps. Verified three defects and
+  posted a narrow correctness note on the one that matters
+  (`pull/73632#issuecomment-5133566189`), Paul's call: post the kill-path
+  finding only, skip piling on.
+- **Why:** They threaded `all_profiles` through `find_gateway_pids()`
+  (`gateway.py:552`) instead of only at the sweep call sites.
+  `find_gateway_pids()` *includes* service PIDs in its result and
+  `kill_gateway_processes(all_profiles=True)` passes straight through to it
+  and `terminate_pid()`s everything returned — so sibling launchd gateways
+  enter the **kill** path. That is the same `_get_service_pids` scope-leak
+  finding #73627's own review already caught and fixed by keeping the
+  default `False` and widening only the two update-sweep sites.
+- **Next:** Watch for the sweeper's re-review of `5cf2751`. #73627 is clean
+  and `MERGEABLE` at `6b993c1d33`; #73632 is still `invalid`/P3 and
+  `CONFLICTING`. If a maintainer starts comparing the two implementations,
+  the differentiator to state is *where* `all_profiles` is threaded.
+- **Watch out:** Two other verified defects were deliberately NOT raised —
+  (a) their `main.py` hunks target `service_pids = _get_service_pids()`,
+  which **no longer exists in upstream `main.py`** (moved by `927463efcc`),
+  so "rebased cleanly" is inaccurate and the branch is still conflicting;
+  (b) their `all_profiles` launchd path globs the whole user domain via
+  `launchctl list` + `startswith("ai.hermes.gateway")` instead of deriving
+  from this install's profiles, breaking sandboxed-`HERMES_HOME` isolation
+  and making hermetic tests machine-sensitive. Both are ammunition if a
+  maintainer proposes merging their version over #73627 — don't spend them
+  unprompted.
+- **Also:** Fixed `~/.claude/hooks/agent-notes-guard.sh` — it queried
+  AGENT-NOTES commits on the **current branch only**, so on any PR branch in
+  this repo (where the file is `.git/info/exclude`d by design) it blocked
+  every session regardless of diligence. Added `--all`; backup at
+  `agent-notes-guard.sh.bak-2026-07-30`. Verified: no block here, still
+  blocks a repo with commits and no notes on any ref.
+
 ## 2026-07-30 (pushed + replied) · claude-code
 
 - **Did:** Paul approved. Force-pushed the rebase+port with
