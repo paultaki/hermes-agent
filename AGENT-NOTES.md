@@ -6,6 +6,34 @@ this file is committed on `main` only and must never appear in an upstream
 PR diff. (A locally-ignored copy sits at the dev clone's root via
 `.git/info/exclude` so branch checkouts still surface it.)
 
+## 2026-08-01 · claude-code
+
+- **Did:** #73627 sat completely static for ~31h (last touch: sweeper
+  re-triage labels 2026-07-30T17:13). Confirmed `MERGEABLE` on current main
+  — the earlier `UNKNOWN` reading was GitHub's lazily-computed field, not a
+  regression. Posted a CI/workflow-approval nudge
+  (`pull/73627#issuecomment-5150518468`).
+- **Why:** Stopped guessing at the CI gap and measured it. Workflow runs
+  correlate exactly with `author_association`: #69104 (Sora-bluesky,
+  `CONTRIBUTOR`) has run `30677757056` with real jobs; #73627 (paultaki,
+  `NONE`) and #73632 (codexbt, `NONE`) have **no workflow run created at
+  all**, across every head either has had. That is the signature of GitHub's
+  "require approval for first-time contributors" setting — a maintainer
+  click, which no rebase or code change can substitute for. The predecessor
+  #41403 died in exactly this kind of silence, so the nudge is the remaining
+  lever.
+- **Next:** If someone approves workflows, CI runs for the first time —
+  expect the possibility of real failures on a branch that has never been
+  exercised by their pipeline, and treat that as the next work item rather
+  than a surprise. If it stays silent another several days, the question
+  becomes whether to ping a specific maintainer or let it ride.
+- **Watch out:** The inference about the Actions setting is from the
+  run-existence pattern, not from reading the repo's Actions config — which
+  is not visible to us. State it as inference if it ever comes up publicly;
+  the posted comment is worded that way deliberately ("reads like").
+  #73632 remains `CONFLICTING`/`invalid`/P3 with our kill-path finding still
+  unanswered and its head unchanged at `5cf275115b` since 07-30.
+
 ## 2026-07-30 (codexbt reimplemented our change) · claude-code
 
 - **Did:** codexbt refactored #73632 (`5cf2751`) after the sweeper review and
